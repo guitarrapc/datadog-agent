@@ -34,11 +34,16 @@ cache:
   - '%GOPATH%\bin'
   - '%GOPATH%\src\github.com\DataDog\datadog-agent\vendor'
 
-build: off
+build: 
+  - invoke agent.build --build-exclude=snmp
+  - 7z a datadog-agent-win.zip %GOPATH%\src\github.com\DataDog\datadog-agent\cmd\agent\
 
 test_script:
   - cd %APPVEYOR_BUILD_FOLDER%
   - inv -e deps
   - inv -e test --coverage --race --profile --fail-on-fmt
   - codecov -f profile.cov
-  - invoke agent.build --build-exclude=snmp
+
+artifacts:
+  - path: datadog-agent-win.zip
+    name: datadog-agent-win
