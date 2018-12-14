@@ -41,13 +41,13 @@ build_script:
   - inv -e deps
   - invoke agent.build --build-exclude=snmp
   - go build -o %GOPATH%\src\github.com\DataDog\datadog-agent\cmd\agent\dist\datadog-agent.exe %GOPATH%\src\github.com\DataDog\datadog-agent\cmd\agent\main.go
-  - 7z a datadog-agent-win.zip %GOPATH%\src\github.com\DataDog\datadog-agent\cmd\agent\
+  - 7z a datadog-agent-win.zip %GOPATH%\src\github.com\DataDog\datadog-agent\cmd\agent\dist\
 
-# test_script:
-  # - cd %APPVEYOR_BUILD_FOLDER%
-  # - inv -e deps
-  # - inv -e test --coverage --race --profile --fail-on-fmt
-  # - codecov -f profile.cov
+test_script:
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - inv -e deps
+  - inv -e test --coverage --race --profile --fail-on-fmt
+  - codecov -f profile.cov
 
 artifacts:
   - path: datadog-agent-win.zip
