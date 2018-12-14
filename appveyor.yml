@@ -41,3 +41,4 @@ test_script:
   - inv -e deps
   - inv -e test --coverage --race --profile --fail-on-fmt
   - codecov -f profile.cov
+  - invoke agent.build --build-exclude=snmp
