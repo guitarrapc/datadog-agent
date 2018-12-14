@@ -40,8 +40,8 @@ build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
   - inv -e deps
   - invoke agent.build --build-exclude=snmp
-  - go build -o %GOPATH%\src\github.com\DataDog\datadog-agent\cmd\agent\dist\datadog-agent.exe %GOPATH%\src\github.com\DataDog\datadog-agent\cmd\agent\main.go
-  - 7z a datadog-agent-win.zip %GOPATH%\src\github.com\DataDog\datadog-agent\cmd\agent\dist\
+  - go build -o %GOPATH%\src\github.com\DataDog\datadog-agent\cmd\agent\dist\agent.exe %GOPATH%\src\github.com\DataDog\datadog-agent\cmd\agent\main.go
+  - 7z a datadog-agent-win.zip %GOPATH%\src\github.com\DataDog\datadog-agent\cmd\agent\
 
 test_script:
   - cd %APPVEYOR_BUILD_FOLDER%
