@@ -2,11 +2,61 @@
 Release Notes
 =============
 
-6.8.0
+.. _Release Notes_6.8.2:
+
+6.8.2
 =====
+
+.. _Release Notes_6.8.2_Prelude:
 
 Prelude
 -------
+
+Release on: 2018-12-19
+
+.. _Release Notes_6.8.2_Bug Fixes:
+
+Bug Fixes
+---------
+
+- Fix a panic that could occur when a container stopped while the agent was reading logs from it.
+
+.. _Release Notes_6.8.1:
+
+6.8.1
+=====
+
+.. _Release Notes_6.8.1_Prelude:
+
+Prelude
+-------
+
+This is a container only release that fixes a bug introduced in ``6.8.0`` that was impacting the kubernetes integration.
+
+Release on: 2018-12-17
+
+- Please refer to the `6.8.1 tag on integrations-core <https://github.com/DataDog/integrations-core/blob/master/AGENT_CHANGELOG.md#datadog-agent-version-681>`_ for the list of changes on the Core Checks.
+
+.. _Release Notes_6.8.1_Bug Fixes:
+
+Bug Fixes
+---------
+
+- Fixes the default ``kubelet`` check configuration that was preventing the kubernetes integration from working properly
+
+.. _Release Notes_6.8.0:
+
+6.8.0
+=====
+
+.. _Release Notes_6.8.0_Prelude:
+
+Prelude
+-------
+
+Please note that a critical bug has been identified in this release that would prevent the kubernetes integration from collecting kubelet metrics on containerized agents.
+The severity of the issue has led us to remove the ``6.8.0`` images on dockerhub and to make the ``latest`` tag point to the ``6.7.0`` release.
+If you have upgraded to this version of the containerized agent we recommend you downgrade to ``6.7.0``. Linux packages are not affected.
 
 Release on: 2018-12-13
 
@@ -19,6 +69,13 @@ Release on: 2018-12-13
 The Datadog Agent now automatically look for the container short image name to set the default value for the log source and service.
 The source is especially important as it triggers the **automatic configuration of your platform with integration pipeline and facets**.
 The Datadog Agent autodiscovery can still be used to override the default source and service with pod annotations or container labels.
+
+Upgrade Notes
+-------------
+
+- The agent now requires a cluster agent version 1.0+ to establish
+  a valid connection
+- JMX garbage collection metrics ``jvm.gc.cms.count`` and ``jvm.gc.parnew.time`` were renamed to ``jvm.gc.minor_collection_count``, ``jvm.gc.major_collection_count``, ``jvm.gc.minor_collection_time``, ``jvm.gc.major_collection_time`` in 6.6 to be more meaningful. To ensure backward compatibility the change was reverted in this release and the new names put behind a config option. If you started relying on these new names please enable the ``new_gc_metrics`` option in your jmx configurations. An example can be found `here <https://github.com/DataDog/datadog-agent/blob/1aee233a18dedbb8af86da0ce1f2e305206aacf8/cmd/agent/dist/conf.d/jmx.d/conf.yaml.example#L8-L13>`_. This flag will be enabled by default in a future major release.
 
 New Features
 ------------
@@ -87,14 +144,6 @@ Enhancement Notes
   `DD_KUBERNETES_POD_LABELS_AS_TAGS='{"*":"kube_%%label%%"}'` will all pod labels as
   tags to your metrics with tags names prefixed by `kube_`.
 
-
-Upgrade Notes
--------------
-
-- The agent now requires a cluster agent version 1.0+ to establish
-  a valid connection
-
-
 Deprecation Notes
 -----------------
 
@@ -139,6 +188,7 @@ Other Notes
   default versions when the Agent is upgraded.
   This guarantees the integrity of the embedded python environment after the upgrade.
 
+- The ``datadog-agent integration`` command is now in Beta.
 
 .. _Release Notes_6.7.0:
 

@@ -445,12 +445,12 @@ agent_android_apk:
     # for now do the steps manually.  Should eventually move this to an invoke
     # task
     - inv -e android.build
-    - mkdir -p $CI_PROJECT_DIR/apk
-    - cp ./bin/agent/ddagent-*-unsigned.apk $CI_PROJECT_DIR/apk
+    - mkdir -p $OMNIBUS_PACKAGE_DIR
+    - cp ./bin/agent/ddagent-*-unsigned.apk $OMNIBUS_PACKAGE_DIR
   artifacts:
     expire_in: 2 weeks
     paths:
-      - $CI_PROJECT_DIR/apk
+      - $OMNIBUS_PACKAGE_DIR
 
 # build Dogstastd package for deb-x64
 dogstatsd_deb-x64:
@@ -616,7 +616,7 @@ deploy_windows_testing:
 # run dd-agent-testing on windows
 kitchen_windows:
   stage: testkitchen_testing
-  allow_failure: true
+  allow_failure: false
   image: 486234852809.dkr.ecr.us-east-1.amazonaws.com/ci/datadog-agent-builders/dd-agent-testing:latest
   <<: *run_when_testkitchen_triggered
   before_script:
@@ -640,7 +640,7 @@ kitchen_windows:
 
 kitchen_windows_installer:
   stage: testkitchen_testing
-  allow_failure: true
+  allow_failure: false
   image: 486234852809.dkr.ecr.us-east-1.amazonaws.com/ci/datadog-agent-builders/dd-agent-testing:latest
   <<: *run_when_testkitchen_triggered
   before_script:
@@ -707,7 +707,7 @@ kitchen_ubuntu:
 # run dd-agent-testing on suse
 kitchen_suse:
   stage: testkitchen_testing
-  allow_failure: true
+  allow_failure: false
   image: 486234852809.dkr.ecr.us-east-1.amazonaws.com/ci/datadog-agent-builders/dd-agent-testing:latest
   <<: *run_when_testkitchen_triggered
   before_script:
@@ -1151,6 +1151,7 @@ deploy_cloudfront_invalidate:
   before_script:
     - ls $OMNIBUS_PACKAGE_DIR
   tags: [ "runner:main", "size:large" ]
+  when: always
   script:
     - cd /deploy_scripts/cloudfront-invalidation
     - "REPO=apt PATTERN_SUBSTRING=/$DEB_RPM_BUCKET_BRANCH/ ./invalidate.sh"

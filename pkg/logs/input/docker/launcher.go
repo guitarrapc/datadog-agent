@@ -209,13 +209,13 @@ func (l *Launcher) startTailer(container *Container, source *config.LogSource) {
 	// compute the offset to prevent from missing or duplicating logs
 	since, err := Since(l.registry, tailer.Identifier(), container.service.CreationTime)
 	if err != nil {
-		log.Warnf("Could not recover tailing from last committed offset: %v", ShortContainerID(containerID), err)
+		log.Warnf("Could not recover tailing from last committed offset %v: %v", ShortContainerID(containerID), err)
 	}
 
 	// start the tailer
 	err = tailer.Start(since)
 	if err != nil {
-		log.Warnf("Could not start tailer: %v", containerID, err)
+		log.Warnf("Could not start tailer %s: %v", containerID, err)
 		return
 	}
 	source.AddInput(containerID)
@@ -228,7 +228,9 @@ func (l *Launcher) startTailer(container *Container, source *config.LogSource) {
 func (l *Launcher) stopTailer(containerID string) {
 	if tailer, isTailed := l.tailers[containerID]; isTailed {
 		// No-op if the tailer source came from AD
-		l.collectAllSource.RemoveInput(containerID)
+		if l.collectAllSource != nil {
+			l.collectAllSource.RemoveInput(containerID)
+		}
 		go tailer.Stop()
 		l.removeTailer(containerID)
 	}
@@ -242,7 +244,9 @@ func (l *Launcher) restartTailer(containerID string) {
 	oldTailer, exists := l.tailers[containerID]
 	if exists {
 		source = oldTailer.source
-		l.collectAllSource.RemoveInput(containerID)
+		if l.collectAllSource != nil {
+			l.collectAllSource.RemoveInput(containerID)
+		}
 		oldTailer.Stop()
 		l.removeTailer(containerID)
 	}
